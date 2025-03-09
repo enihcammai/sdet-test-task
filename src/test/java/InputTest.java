@@ -14,7 +14,6 @@ public class InputTest {
     public static InputPage inputPage;
 
     @BeforeAll
-//    @Step("Открываем браузер и переходим на страницу формы")
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", ConfProperties.getProperty("chromedriver"));
         driver = new ChromeDriver();
@@ -26,7 +25,6 @@ public class InputTest {
     }
 
     @Test
-//    @Description("Проверка успешного заполнения данными")
     public void testFormSubmission() {
 
         inputPage.inputName(ConfProperties.getProperty("name"));
@@ -40,13 +38,11 @@ public class InputTest {
 
         inputPage.clickSubmitBtn();
 
-//        Allure.step("Проверка сообщения");
         assertTrue(inputPage.isAlertMessageReceived());
 
     }
 
     @AfterAll
-//    @Step("Закрываем браузер")
     public static void tearDown() {
         driver.quit();
     }
