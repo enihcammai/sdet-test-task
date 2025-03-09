@@ -16,29 +16,27 @@ public class InputTest {
     @BeforeAll
 //    @Step("Открываем браузер и переходим на страницу формы")
     public static void setup() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\SexSexFul\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", ConfProperties.getProperty("chromedriver"));
         driver = new ChromeDriver();
         inputPage = new InputPage(driver);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-        driver.get("https://practice-automation.com/form-fields/");
+        driver.get(ConfProperties.getProperty("inputpage"));
     }
 
     @Test
 //    @Description("Проверка успешного заполнения данными")
     public void testFormSubmission() {
 
-        inputPage.inputName("Vladislav");
-        inputPage.inputPassword("123456");
-        inputPage.chooseDrink("milk", "coffee");
-        inputPage.chooseColor("yellow");
+        inputPage.inputName(ConfProperties.getProperty("name"));
+        inputPage.inputPassword(ConfProperties.getProperty("password"));
+        inputPage.chooseDrink(ConfProperties.getProperty("drinks").split(","));
+        inputPage.chooseColor(ConfProperties.getProperty("color"));
         inputPage.selectOption();
 
-
+        inputPage.inputEmail(ConfProperties.getProperty("email"));
         inputPage.message();
-
-        inputPage.inputEmail("example@email.com");
 
         inputPage.clickSubmitBtn();
 
