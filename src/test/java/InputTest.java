@@ -1,3 +1,4 @@
+import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -33,6 +34,8 @@ public class InputTest {
     @Description("Проверка успешного создания сущности")
     public void testFormSubmission() {
 
+        Allure.step("Открываем страницу");
+
         inputPage.inputName(ConfProperties.getProperty("name"));
         inputPage.inputPassword(ConfProperties.getProperty("password"));
         inputPage.chooseDrink(ConfProperties.getProperty("drinks").split(","));
@@ -45,7 +48,7 @@ public class InputTest {
         inputPage.clickSubmitBtn();
 
         assertTrue(inputPage.isAlertMessageReceived());
-
+        Allure.step("Закрываем страницу");
     }
 
     @AfterAll
