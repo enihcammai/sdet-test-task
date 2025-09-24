@@ -47,7 +47,7 @@ public class InputTest {
 
         inputPage.clickSubmitBtn();
 
-//        assertTrue(inputPage.isAlertMessageReceived());
+        assertTrue(inputPage.isAlertMessageReceived());
         Allure.step("Закрываем страницу");
     }
 
