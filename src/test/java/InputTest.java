@@ -1,3 +1,6 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,6 +28,9 @@ public class InputTest {
     }
 
     @Test
+    @Epic("Entity Management")
+    @Feature("Create")
+    @Description("Проверка успешного создания сущности")
     public void testFormSubmission() {
 
         inputPage.inputName(ConfProperties.getProperty("name"));
