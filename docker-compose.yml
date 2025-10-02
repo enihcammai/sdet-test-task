@@ -1,0 +1,60 @@
+version: "3"
+services:
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    container_name: selenoid
+    ports:
+      - "4444:4444"
+    environment:
+      - "OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/video"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./selenoid/browsers.json:/etc/selenoid/browsers.json:ro"
+      - "./video:/opt/selenoid/video"
+      - "./logs:/opt/selenoid/logs"
+    command: [
+      "-conf", "/etc/selenoid/browsers.json",
+      "-limit", "5",
+      "-timeout", "10m",
+      "-service-startup-timeout", "1m",
+      "-session-attempt-timeout", "8m",
+      "-session-delete-timeout", "5m",
+      "-video-output-dir", "/opt/selenoid/video",
+      "-log-output-dir", "/opt/selenoid/logs"
+    ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4444/status" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+#  selenoid-ui:
+#    image: aerokube/selenoid-ui:latest-release
+#    container_name: selenoid-ui
+#    ports:
+#      - "8080:8080"
+#    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+#    depends_on:
+#      - selenoid
+
+  test-runner:
+    build: ./test-runner
+    container_name: test-runner
+    volumes:
+      - ".:/workspace"
+      - "./maven-cache:/root/.m2"
+    working_dir: /workspace
+    command: >
+      sh -c "
+        echo 'Waiting for Selenoid...' &&
+        while ! curl -s http://selenoid:4444/status > /dev/null; do
+          sleep 2
+        done &&
+        echo 'Selenoid ready, waiting extra 10 seconds...' &&
+        sleep 10 &&
+        mvn test
+      "
+    environment:
+      - SELENOID_URL=http://selenoid:4444/wd/hub
+    depends_on:
+      - selenoid
