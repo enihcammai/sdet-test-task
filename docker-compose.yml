@@ -7,6 +7,7 @@ services:
       - "4444:4444"
     environment:
       - "OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/video"
+#    network_mode: bridge
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./selenoid/browsers.json:/etc/selenoid/browsers.json:ro"
@@ -16,7 +17,7 @@ services:
       "-conf", "/etc/selenoid/browsers.json",
       "-limit", "5",
       "-timeout", "10m",
-      "-service-startup-timeout", "1m",
+      "-service-startup-timeout", "30s",
       "-session-attempt-timeout", "8m",
       "-session-delete-timeout", "5m",
       "-video-output-dir", "/opt/selenoid/video",
@@ -40,8 +41,10 @@ services:
   test-runner:
     build: ./test-runner
     container_name: test-runner
+#    network_mode: bridge
     volumes:
       - ".:/workspace"
+      - "./test-results:/app/target"
       - "./maven-cache:/root/.m2"
     working_dir: /workspace
     command: >
@@ -50,8 +53,7 @@ services:
         while ! curl -s http://selenoid:4444/status > /dev/null; do
           sleep 2
         done &&
-        echo 'Selenoid ready, waiting extra 10 seconds...' &&
-        sleep 10 &&
+        echo 'Selenoid ready!...' &&
         mvn test
       "
     environment:
